@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bienestar Vascular</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <!-- Reporte de seguimiento SOLO para impresión / PDF (oculto en pantalla) -->
+  <div class="print-report print-only" id="print-report">
+    <div class="print-header">
+      <img src="icons/icon128.png" alt="Bienestar Vascular" class="print-logo" />
+      <div class="print-heading">
+        <div class="print-title">Bienestar Vascular · Pausas Activas</div>
+        <div class="print-subtitle">Reporte de seguimiento de actividad · apoyo para consulta médica</div>
+        <div class="print-meta" id="print-meta"></div>
+      </div>
+    </div>
+
+    <div class="print-section">
+      <div class="print-h" id="print-period-title">Resumen del periodo (últimos 30 días)</div>
+      <div class="print-metrics" id="print-metrics"></div>
+    </div>
+
+    <div class="print-section">
+      <div class="print-h">Actividad diaria (últimas 2 semanas · minutos de movilización)</div>
+      <div class="print-chart" id="print-chart"></div>
+    </div>
+
+    <div class="print-section">
+      <div class="print-h">Ejercicios y pausas que realiza el usuario</div>
+      <ul class="print-list" id="print-exercises"></ul>
+    </div>
+
+    <div class="print-section" id="print-notes-section">
+      <div class="print-h">Observaciones del usuario</div>
+      <p class="print-notes" id="print-notes"></p>
+    </div>
+
+    <div class="print-section">
+      <div class="print-h">Observaciones del profesional (a rellenar en consulta)</div>
+      <div class="print-proflines"><div></div><div></div><div></div><div></div></div>
+    </div>
+
+    <p class="print-disclaimer">
+      Documento generado automáticamente por la aplicación <b>Bienestar Vascular · Pausas Activas</b>
+      con fines de autoseguimiento personal. Refleja el registro de pausas activas y tiempo de
+      movilización introducido por el usuario; no constituye un diagnóstico médico ni sustituye la
+      valoración de un profesional sanitario.
+    </p>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- CABECERA: avatar + saludo + botón sonido + botón de tema      -->
+  <!-- ============================================================= -->
+  <header class="app-header">
+    <div class="greeting">
+      <span id="header-avatar" class="header-avatar">🌱</span>
+      <div class="greeting-text">
+        <span class="hello" data-i18n="hello">Hola,</span>
+        <strong id="header-name">amig@</strong>
+      </div>
+    </div>
+    <div class="header-actions">
+      <!-- Botón rápido para SILENCIAR/activar todos los sonidos -->
+      <button id="sound-toggle" class="icon-btn" title="Silenciar sonidos" aria-label="Silenciar o activar sonidos">
+        <span id="sound-icon">🔊</span>
+      </button>
+      <!-- Botón rápido de MODO OSCURO / claro -->
+      <button id="theme-toggle" class="icon-btn" title="Cambiar tema" aria-label="Cambiar modo claro u oscuro">
+        <span id="theme-icon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================================================= -->
+  <!-- VISTA: INICIO (perfil + temporizador + fin de jornada)        -->
+  <!-- ============================================================= -->
+  <main>
+    <section id="view-inicio" class="view active">
+
+      <!-- Banner / hero: texto real (HTML/CSS, adaptable a claro/oscuro) + foto decorativa a la derecha -->
+      <div class="hero-banner">
+        <div class="hero-content">
+          <div class="hero-brand"><span class="hero-mark">🌿</span> Bienestar Vascular <span class="hero-brand-sep">·</span> <span class="hero-brand-2">Pausas Activas</span></div>
+          <h1 class="hero-title">Cuida tu <span class="hl">cuerpo</span>, rinde al <span class="hl">máximo</span>.</h1>
+          <p class="hero-sub">Temporizador inteligente de pausas activas y píldoras de salud para trabajadores remotos y <i>gamers</i>.</p>
+          <ul class="hero-feats">
+            <li><span class="hero-ic">🤸</span> Pausas activas que te mueven</li>
+            <li><span class="hero-ic">❤️</span> Píldoras de salud para tu bienestar</li>
+            <li><span class="hero-ic">🚀</span> Más energía, más enfoque</li>
+            <li><span class="hero-ic">🛡️</span> Cuida tu circulación sin salir del navegador</li>
+          </ul>
+          <p class="hero-tag">🌿 Pequeñas pausas, grandes cambios. 💛</p>
+        </div>
+        <div class="hero-photo" aria-hidden="true"></div>
+        <picture class="hero-pic">
+          <source srcset="img/hero.webp" type="image/webp" />
+          <img class="hero-img" src="img/hero.jpg" alt="Bienestar Vascular · Pausas Activas — Cuida tu cuerpo, rinde al máximo" />
+        </picture>
+      </div>
+
+      <!-- Perfil de usuario (guardado en chrome.storage.local) -->
+      <div class="card profile-card">
+        <label class="field-label" for="name-input" data-i18n="your_name">Tu nombre</label>
+        <input id="name-input" class="text-input" type="text" maxlength="20" placeholder="Escribe tu nombre…" data-i18n-attr="placeholder:name_ph" />
+        <label class="field-label" data-i18n="your_avatar">Tu avatar</label>
+        <div id="avatar-picker" class="avatar-picker"><!-- se rellena por JS --></div>
+      </div>
+
+      <!-- Selector de modo del temporizador -->
+      <div class="mode-selector" id="mode-selector"><!-- se rellena por JS --></div>
+
+      <!-- Temporizador circular -->
+      <div class="card timer-card">
+        <div class="ring" id="ring">
+          <div class="ring-inner">
+            <span id="phase-icon" class="phase-icon">🪑</span>
+            <span id="time-left" class="time-left">30:00</span>
+            <span id="phase-name" class="phase-name">Listo para empezar</span>
+          </div>
+        </div>
+        <p id="phase-tip" class="phase-tip">Elige un modo y pulsa Iniciar 🌿</p>
+
+        <!-- Ejercicios guiados (solo durante fases de pausa/movimiento) -->
+        <div id="exercise-panel" class="exercise-panel hidden">
+          <div class="exercise-title" id="exercise-title">Ejercicios sugeridos</div>
+          <ol class="exercise-steps" id="exercise-steps"></ol>
+        </div>
+
+        <!-- Controles del temporizador -->
+        <div class="controls" id="controls">
+          <button id="btn-start" class="btn btn-primary" data-i18n="start">▶️ Iniciar</button>
+          <button id="btn-resume" class="btn btn-primary hidden" data-i18n="resume">▶️ Reanudar</button>
+          <button id="btn-pause" class="btn btn-soft hidden" data-i18n="pause">⏸️ Pausar</button>
+          <button id="btn-skip" class="btn btn-soft hidden" data-i18n="skip">⏭️ Saltar</button>
+          <button id="btn-stop" class="btn btn-ghost hidden" data-i18n="stop">⏹️ Detener</button>
+        </div>
+      </div>
+
+      <!-- Botón Fin de Jornada -->
+      <button id="btn-endday" class="btn btn-endday" data-i18n="endday">🌙 Fin de Jornada</button>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- VISTA: PROGRESO (estadísticas semanales / gamificación)       -->
+    <!-- ============================================================= -->
+    <section id="view-progreso" class="view">
+      <h2 class="view-title" data-i18n="progress_title">📊 Tu semana</h2>
+      <p class="view-sub" id="week-range"><!-- rango de fechas por JS --></p>
+
+      <div class="stats-grid">
+        <div class="card stat-box">
+          <span class="stat-value" id="stat-hours">0.0</span>
+          <span class="stat-label" data-i18n="stat_movement">Tiempo en movimiento</span>
+        </div>
+        <div class="card stat-box">
+          <span class="stat-value" id="stat-streak">0 🔥</span>
+          <span class="stat-label" data-i18n="stat_streak">Racha de días seguidos</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="stat-row">
+          <span data-i18n="breaks_week">Pausas activas esta semana</span>
+          <strong id="stat-breaks">0</strong>
+        </div>
+        <div class="week-chart" id="week-chart"><!-- 7 barras por JS --></div>
+      </div>
+
+      <p class="mini-hint" data-i18n="progress_hint">Cada pausa de pie, movimiento o descanso que completas suma a tu progreso. 💪</p>
+
+      <!-- Datos para el reporte médico (PDF) -->
+      <div class="card report-card">
+        <label class="field-label" for="report-days" data-i18n="report_period">Periodo del resumen del reporte</label>
+        <select id="report-days" class="report-select">
+          <option value="7" data-i18n="last7">Últimos 7 días</option>
+          <option value="30" data-i18n="last30">Últimos 30 días</option>
+          <option value="90" data-i18n="last90">Últimos 90 días</option>
+        </select>
+
+        <label class="field-label" for="report-ref" data-i18n="report_ref">Referencia / Nº de historia clínica (opcional)</label>
+        <input id="report-ref" class="text-input" type="text" maxlength="40" placeholder="Ej. HC-12345" data-i18n-attr="placeholder:report_ref_ph" />
+
+        <label class="field-label" for="report-notes" data-i18n="report_notes">Observaciones para el profesional (opcional)</label>
+        <textarea id="report-notes" class="report-notes" rows="3" maxlength="500" placeholder="Ej. Molestias al final del día, medicación actual…" data-i18n-attr="placeholder:report_notes_ph"></textarea>
+      </div>
+
+      <button id="btn-report" class="btn btn-primary full" data-i18n="btn_report">📄 Descargar reporte médico (PDF)</button>
+      <button id="btn-export" class="btn btn-soft full" data-i18n="btn_export">📥 Exportar datos crudos (CSV)</button>
+      <p class="mini-hint center" data-i18n="pdf_csv_hint">El <b>PDF</b> es el reporte para el médico (logo, paciente, datos y observaciones). El <b>CSV</b> son los datos en bruto para analizar.</p>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- VISTA: PÍLDORAS DE SALUD (4 áreas)                             -->
+    <!-- ============================================================= -->
+    <section id="view-pildoras" class="view">
+      <h2 class="view-title" data-i18n="pills_title">💊 Píldoras de salud</h2>
+      <div class="pill-categories" id="pill-categories"><!-- por JS --></div>
+      <div id="pill-list" class="pill-list"><!-- consejos de la categoría por JS --></div>
+      <button id="btn-more-pills" class="btn btn-ghost full" data-i18n="more_pills">🔀 Ver otros consejos</button>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- VISTA: AJUSTES                                                 -->
+    <!-- ============================================================= -->
+    <section id="view-ajustes" class="view">
+      <h2 class="view-title" data-i18n="settings_title">⚙️ Ajustes</h2>
+
+      <button id="btn-how" class="btn btn-soft full" data-i18n="how_it_works">❔ ¿Cómo funciona?</button>
+      <button id="btn-demo2" class="btn btn-ghost full" data-i18n="demo_btn">▶ Ver demo guiada</button>
+
+      <!-- Idioma -->
+      <div class="card toggle-row">
+        <div><strong data-i18n="language">Idioma</strong></div>
+        <div class="lang-select" id="lang-select">
+          <button type="button" class="lang-btn" data-lang="es">🇪🇸 ES</button>
+          <button type="button" class="lang-btn" data-lang="en">🇬🇧 EN</button>
+        </div>
+      </div>
+
+      <!-- Modo oscuro -->
+      <div class="card toggle-row">
+        <div>
+          <strong data-i18n="dark_mode">Modo oscuro</strong>
+          <p class="mini-hint" data-i18n="dark_mode_hint">Cambia entre tema claro y oscuro.</p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="toggle-theme" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <!-- Sonido de EJERCICIO (interruptor + prueba + volumen propios) -->
+      <div class="card">
+        <div class="toggle-row">
+          <div>
+            <strong data-i18n="sound_ex">Sonido de ejercicio 🔔</strong>
+            <p class="mini-hint" data-i18n="sound_ex_hint">Campanilla de cristal al cambiar de fase o ejercicio.</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="toggle-sound" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <button id="btn-test-sound" class="btn btn-soft btn-test" data-i18n="test_sound_ex">🎵 Probar sonido de ejercicio</button>
+        <div class="card-extra volume-row">
+          <span class="vol-ico">🔈</span>
+          <input type="range" id="volume-slider" class="volume-slider" min="0" max="100" step="1" value="50"
+                 aria-label="Volumen del sonido de ejercicio" />
+          <span class="vol-ico">🔊</span>
+          <span id="volume-value" class="volume-value">50%</span>
+        </div>
+      </div>
+
+      <!-- Sonido de PÍLDORA (interruptor + prueba + volumen propios) -->
+      <div class="card">
+        <div class="toggle-row">
+          <div>
+            <strong data-i18n="sound_pill">Sonido de píldora 💊</strong>
+            <p class="mini-hint" data-i18n="sound_pill_hint">Aviso distinto al recibir un consejo de salud.</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="toggle-sound-tip" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <button id="btn-test-tip" class="btn btn-soft btn-test" data-i18n="test_sound_pill">💊 Probar sonido de píldora</button>
+        <div class="card-extra volume-row">
+          <span class="vol-ico">🔈</span>
+          <input type="range" id="volume-slider-tip" class="volume-slider" min="0" max="100" step="1" value="50"
+                 aria-label="Volumen del sonido de píldora" />
+          <span class="vol-ico">🔊</span>
+          <span id="volume-value-tip" class="volume-value">50%</span>
+        </div>
+      </div>
+
+      <!-- Consejos emergentes -->
+      <div class="card">
+        <div class="toggle-row">
+          <div>
+            <strong data-i18n="tips_toggle">Recibir consejos emergentes</strong>
+            <p class="mini-hint" data-i18n="tips_toggle_hint">Notificaciones ocasionales con una píldora de salud al azar.</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="toggle-tips" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="card-extra">
+          <span data-i18n="freq_every">Frecuencia: cada</span>
+          <input type="number" id="tip-interval" class="dur-input" min="15" max="480" step="5" />
+          <span data-i18n="minutes">min</span>
+        </div>
+      </div>
+
+      <!-- Pausa de transición entre fases -->
+      <div class="card toggle-row">
+        <div>
+          <strong data-i18n="transition">Pausa de transición ⏳</strong>
+          <p class="mini-hint" data-i18n="transition_hint">1 minuto entre fases para colocarte antes del siguiente movimiento.</p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="toggle-transition" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <!-- No molestar (horario silencioso) -->
+      <div class="card">
+        <div class="toggle-row">
+          <div>
+            <strong data-i18n="dnd">No molestar 🌙</strong>
+            <p class="mini-hint" data-i18n="dnd_hint">Silencia avisos y sonidos en el horario que elijas (por ejemplo, tu descanso).</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="toggle-dnd" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="card-extra dnd-times">
+          <label class="dnd-field"><span data-i18n="from">Desde</span> <input type="time" id="dnd-from" class="time-input" value="21:00" /></label>
+          <label class="dnd-field"><span data-i18n="to">Hasta</span> <input type="time" id="dnd-to" class="time-input" value="08:00" /></label>
+        </div>
+      </div>
+
+      <!-- Duraciones personalizadas (desplegable) -->
+      <details class="card details-card">
+        <summary data-i18n="custom_durations">⏱️ Personalizar duraciones</summary>
+        <p class="mini-hint" data-i18n="custom_durations_hint">Ajusta los minutos de cada fase. Las marcadas con <b>cuenta</b> son las pausas activas: solo esas suman a tu progreso y al reporte PDF.</p>
+        <div id="durations-config"><!-- se rellena por JS --></div>
+        <button id="btn-reset-durations" class="btn btn-ghost full" data-i18n="reset_durations">↩️ Restablecer duraciones</button>
+      </details>
+
+      <!-- Mi rutina personalizada (modo "custom") -->
+      <details class="card details-card">
+        <summary data-i18n="my_routine">🛠️ Mi rutina personalizada</summary>
+        <p class="mini-hint" data-i18n="my_routine_hint">Crea tu propia secuencia. En cada fase elige si es <b>💻 Trabajo</b> (concentración) o <b>🧍 Pausa</b> (te levantas y te mueves). En las <b>Pausas</b> verás ejercicios guiados y contarán en tu progreso. Se usa en el modo <b>🛠️ Mi rutina</b>.</p>
+        <div id="routine-config"><!-- se rellena por JS --></div>
+        <button id="btn-add-phase" class="btn btn-soft full" data-i18n="add_phase">➕ Añadir fase</button>
+        <button id="btn-reset-routine" class="btn btn-ghost full" data-i18n="reset_routine">↩️ Restablecer rutina de ejemplo</button>
+      </details>
+
+      <div class="card">
+        <label class="field-label" data-i18n="backup">Copia de seguridad</label>
+        <p class="mini-hint" data-i18n="backup_hint">Guarda o restaura <b>todos tus datos</b> (perfil, ajustes, historial y racha) en un archivo local. Útil al cambiar de equipo o antes de limpiar los datos.</p>
+        <button id="btn-backup" class="btn btn-soft full" data-i18n="backup_export">💾 Exportar copia de seguridad (JSON)</button>
+        <button id="btn-restore" class="btn btn-ghost full" data-i18n="backup_import">📂 Importar copia de seguridad</button>
+        <input id="restore-file" type="file" accept="application/json,.json" hidden />
+      </div>
+
+      <button id="btn-reset" class="btn btn-ghost full" data-i18n="reset_stats">🧹 Reiniciar estadísticas</button>
+
+      <!-- Apoyo voluntario (monetización) -->
+      <a href="https://ko-fi.com/bienestarvascular" target="_blank" rel="noopener" class="btn btn-coffee full" data-i18n="coffee_btn">Invítame un café ☕</a>
+      <p class="support-hint" data-i18n="support_hint">¿Te ayuda a moverte y cuidarte? Puedes apoyar el proyecto 💚</p>
+
+      <p class="mini-hint center" data-i18n="privacy_hint">Toda tu información se guarda solo en tu equipo (chrome.storage.local). Sin nube, sin cuentas.</p>
+    </section>
+  </main>
+
+  <!-- ============================================================= -->
+  <!-- NAVEGACIÓN INFERIOR (menús híbridos: icono + texto)           -->
+  <!-- ============================================================= -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-view="inicio"><span>🏠</span><small data-i18n="nav_home">Inicio</small></button>
+    <button class="nav-btn" data-view="progreso"><span>📊</span><small data-i18n="nav_progress">Progreso</small></button>
+    <button class="nav-btn" data-view="pildoras"><span>💊</span><small data-i18n="nav_pills">Píldoras</small><span id="pill-badge" class="nav-badge hidden">0</span></button>
+    <button class="nav-btn" data-view="ajustes"><span>⚙️</span><small data-i18n="nav_settings">Ajustes</small></button>
+    <a class="nav-btn nav-coffee" href="https://ko-fi.com/bienestarvascular" target="_blank" rel="noopener" title="Invítame un café"><span>☕</span><small data-i18n="nav_coffee">Café</small></a>
+    <div class="nav-support">
+      <p class="support-hint" data-i18n="support_hint">¿Te ayuda a moverte y cuidarte? Puedes apoyar el proyecto 💚</p>
+      <p class="mini-hint center" data-i18n="privacy_hint">Toda tu información se guarda solo en tu equipo (chrome.storage.local). Sin nube, sin cuentas.</p>
+    </div>
+  </nav>
+
+  <!-- ============================================================= -->
+  <!-- OVERLAY: FIN DE JORNADA (animación relajante)                 -->
+  <!-- ============================================================= -->
+  <!-- Bienvenida / Onboarding (se muestra la primera vez) -->
+  <div id="onboarding-overlay" class="overlay hidden">
+    <div class="overlay-card onboarding-card">
+      <img src="icons/icon128.png" alt="" aria-hidden="true" class="onboarding-logo" />
+      <h2 data-i18n="ob_welcome">👋 Te damos la bienvenida</h2>
+      <p class="onboarding-sub" data-i18n="ob_sub">Pausas activas y píldoras de salud para cuidarte mientras trabajas o juegas.</p>
+      <ul class="onboarding-steps">
+        <li><span class="ob-ic">⏱️</span> <span data-i18n="ob_1">Elige un modo (Profundo, Pomodoro o Gaming) y pulsa <b>Iniciar</b>. Te avisamos cuándo moverte.</span></li>
+        <li><span class="ob-ic">🧍</span> <span data-i18n="ob_2">En cada pausa verás <b>ejercicios guiados</b>: solo sigue los pasos.</span></li>
+        <li><span class="ob-ic">💊</span> <span data-i18n="ob_3">Recibe <b>píldoras de salud</b>: consejos rápidos para tu vista, postura y circulación.</span></li>
+        <li><span class="ob-ic">📊</span> <span data-i18n="ob_4">Consulta tu <b>progreso</b> y descarga un reporte para tu médico si lo necesitas.</span></li>
+      </ul>
+      <p class="onboarding-note" data-i18n="ob_note">Es una herramienta de <b>autocuidado y autorregistro</b>. No sustituye el consejo de un profesional de la salud.</p>
+      <button id="btn-onboarding-close" class="btn btn-primary full" data-i18n="ob_start">¡Empezar! 🌿</button>
+      <button id="btn-demo" class="btn btn-ghost full" data-i18n="demo_btn">▶ Ver demo guiada</button>
+    </div>
+  </div>
+
+  <!-- Tour interactivo (demo guiada) -->
+  <div id="tour" class="tour hidden">
+    <div id="tour-hole" class="tour-hole"></div>
+    <div id="tour-pop" class="tour-pop">
+      <p id="tour-text"></p>
+      <div class="tour-controls">
+        <span id="tour-count" class="tour-count"></span>
+        <button id="tour-skip" class="tour-btn skip" data-i18n="tour_skip">Saltar</button>
+        <button id="tour-next" class="tour-btn next" data-i18n="tour_next">Siguiente</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="endday-overlay" class="overlay hidden">
+    <div class="overlay-card">
+      <h2 data-i18n="endday_title">🌙 Fin de Jornada</h2>
+      <div class="breath-circle" id="breath-circle">
+        <span id="breath-text" data-i18n="breathe">Respira</span>
+      </div>
+      <p class="endday-text" data-i18n="endday_text_html">
+        Túmbate y <strong>eleva las piernas contra la pared</strong> durante
+        <strong>5–10 minutos</strong>. Ayuda al retorno venoso y descansa tus piernas
+        tras un día sentad@.
+      </p>
+      <div class="endday-timer" id="endday-timer">05:00</div>
+      <button id="btn-endday-close" class="btn btn-primary full" data-i18n="endday_close">Cerrar 🌿</button>
+    </div>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="core.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

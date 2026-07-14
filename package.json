@@ -1,0 +1,9 @@
+{
+  "name": "bienestar-vascular",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bienestar Vascular · Pausas Activas — temporizador de pausas activas y píldoras de salud (extensión Chrome + PWA).",
+  "scripts": {
+    "test": "node --test"
+  }
+}

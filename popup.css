@@ -1,0 +1,1148 @@
+/* =================================================================
+   BIENESTAR VASCULAR · popup.css
+   Estilo "Soft Productivity": colores suaves/pastel, bordes muy
+   redondeados (píldora), sombras difusas y transiciones suaves.
+   Sin color-mix (para máxima compatibilidad): usamos variables
+   pastel predefinidas en cada tema.
+   ================================================================= */
+
+/* ----- Variables de tema (CLARO por defecto) ----- */
+:root {
+  --bg:            #FAF6F0;   /* beige / blanco roto */
+  --bg-2:          #F1E9DE;   /* segundo tono para el degradado del fondo */
+  --surface:       #FFFFFF;   /* tarjetas */
+  --surface-2:     #F2ECE3;   /* fondos secundarios / pista del anillo */
+  --text:          #3D3A34;   /* texto principal */
+  --text-soft:     #928C82;   /* texto secundario */
+  --accent:        #7ECAB0;   /* verde menta (principal) */
+  --accent-2:      #AEDCE6;   /* azul cielo (secundario) */
+  --accent-strong: #4FB79A;   /* menta intensa para progreso */
+  --accent-tint:   #E5F4EE;   /* menta muy claro (estados seleccionados) */
+  --accent-2-tint: #E4F1F6;   /* azul cielo muy claro (botón fin de jornada) */
+  --border:        #ECE4D9;
+  --shadow:        0 6px 18px rgba(90, 80, 65, 0.10);
+  --shadow-sm:     0 2px 8px rgba(90, 80, 65, 0.08);
+  --overlay:       rgba(250, 246, 240, 0.90);
+  --on-accent:     #12362C;   /* texto sobre acento (contraste alto) */
+  --coffee-bg:     #EEDFC4;   /* botón "Invítame un café" (pastel cálido) */
+  --coffee-fg:     #6B5330;
+  --radius:        18px;      /* redondeo general (estilo píldora) */
+  --radius-sm:     12px;
+}
+
+/* ----- Tema OSCURO (cálido, no negro puro) ----- */
+[data-theme="dark"] {
+  --bg:            #201F26;
+  --bg-2:          #191820;
+  --surface:       #2B2A33;
+  --surface-2:     #35343E;
+  --text:          #ECE8E1;
+  --text-soft:     #A7A199;
+  --accent:        #79C5AC;
+  --accent-2:      #8FC7D6;
+  --accent-strong: #63C7A9;
+  --accent-tint:   #2F3B39;
+  --accent-2-tint: #2C3A40;
+  --border:        #3B3A45;
+  --shadow:        0 6px 18px rgba(0, 0, 0, 0.35);
+  --shadow-sm:     0 2px 8px rgba(0, 0, 0, 0.28);
+  --overlay:       rgba(25, 24, 32, 0.90);
+  --on-accent:     #0E2A22;
+  --coffee-bg:     #3A332A;
+  --coffee-fg:     #E7D6B6;
+}
+
+/* ----- Base ----- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  width: 360px;
+  min-height: 520px;
+  font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", system-ui, sans-serif;
+  color: var(--text);
+  /* Fondo con un degradado muy sutil (cálido) */
+  background: linear-gradient(165deg, var(--bg) 0%, var(--bg-2) 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: color 0.35s ease;
+  padding-bottom: 70px; /* deja hueco a la nav inferior fija */
+}
+
+/* ----- Cabecera ----- */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 10px;
+}
+.greeting { display: flex; align-items: center; gap: 10px; }
+.header-avatar {
+  font-size: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.35s ease, border 0.35s ease;
+}
+.greeting-text { display: flex; flex-direction: column; line-height: 1.15; }
+.hello { font-size: 12px; color: var(--text-soft); }
+.greeting-text strong { font-size: 16px; }
+
+.header-actions { display: flex; gap: 8px; }
+.icon-btn {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 50%;
+  width: 40px; height: 40px;
+  font-size: 17px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  display: grid; place-items: center;
+  transition: transform 0.15s ease, background 0.35s ease, border 0.35s ease;
+}
+.icon-btn:hover { transform: scale(1.08); }
+.icon-btn:active { transform: scale(0.96); }
+
+/* ----- Vistas ----- */
+main { padding: 8px 18px 4px; }
+.view { display: none; animation: fade 0.28s ease; }
+.view.active { display: block; }
+@keyframes fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.view-title { font-size: 17px; margin: 6px 0 16px; font-weight: 700; }
+.view-sub { font-size: 12px; color: var(--text-soft); margin: -8px 0 14px; }
+
+/* ----- Tarjetas ----- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  transition: background 0.35s ease, border 0.35s ease;
+}
+
+/* ----- Perfil ----- */
+.field-label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-soft);
+  margin: 4px 0 6px;
+}
+.text-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  border-radius: 999px;      /* píldora */
+  padding: 11px 16px;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+.text-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-tint);
+}
+
+/* ----- Controles del reporte médico (periodo, referencia, observaciones) ----- */
+.report-select, .report-notes {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 13.5px;
+  font-family: inherit;
+  outline: none;
+  margin-bottom: 2px;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+.report-select:focus, .report-notes:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-tint);
+}
+.report-notes { resize: vertical; min-height: 62px; line-height: 1.45; }
+.report-card .field-label { margin-top: 10px; }
+.report-card .field-label:first-child { margin-top: 2px; }
+
+.avatar-picker { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.avatar-option {
+  font-size: 20px;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: var(--surface-2);
+  cursor: pointer;
+  display: grid; place-items: center;
+  transition: transform 0.12s ease, border 0.2s ease, background 0.2s ease;
+}
+.avatar-option:hover { transform: scale(1.12); }
+.avatar-option.selected { border-color: var(--accent); background: var(--accent-tint); }
+
+/* ----- Selector de modo (menús híbridos: icono + texto) ----- */
+.mode-selector { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+.mode-btn {
+  flex: 1 1 68px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 11px 6px;
+  cursor: pointer;
+  text-align: center;
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.12s ease, border 0.2s ease, background 0.2s ease;
+}
+.mode-btn:hover { transform: translateY(-2px); }
+.mode-btn .m-icon { font-size: 22px; display: block; }
+.mode-btn .m-text { font-size: 11px; color: var(--text-soft); display: block; margin-top: 3px; }
+.mode-btn.selected { border-color: var(--accent); background: var(--accent-tint); }
+.mode-btn.selected .m-text { color: var(--text); }
+.mode-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+/* ----- Temporizador circular ----- */
+.timer-card { text-align: center; }
+.ring {
+  --progress: 0%;
+  width: 172px; height: 172px;
+  border-radius: 50%;
+  margin: 4px auto 12px;
+  /* Anillo de progreso con conic-gradient */
+  background: conic-gradient(var(--accent-strong) var(--progress), var(--surface-2) 0);
+  display: grid; place-items: center;
+  transition: background 0.3s linear;
+}
+.ring-inner {
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  background: var(--surface);
+  /* Flexbox centrado + padding para que el texto NUNCA desborde el círculo */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  padding: 10px;
+  text-align: center;
+  box-sizing: border-box;
+  overflow: hidden;            /* recorta al círculo por seguridad */
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.06);
+  transition: background 0.35s ease;
+}
+.phase-icon { font-size: 24px; line-height: 1; }
+.time-left { font-size: 34px; font-weight: 700; letter-spacing: 0.5px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.phase-name {
+  font-size: 10.5px;
+  color: var(--text-soft);
+  line-height: 1.2;
+  max-width: 116px;           /* obliga a envolver el texto largo dentro del círculo */
+}
+.phase-tip {
+  font-size: 12.5px;
+  color: var(--text-soft);
+  min-height: 34px;
+  padding: 0 6px;
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+
+/* ----- Botones ----- */
+.controls { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.btn {
+  border: none;
+  border-radius: 999px;
+  padding: 11px 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text);
+  transition: transform 0.12s ease, filter 0.2s ease, background 0.2s ease;
+}
+.btn:hover { transform: translateY(-1px); filter: brightness(1.04); }
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--accent); color: var(--on-accent); box-shadow: var(--shadow-sm); }
+.btn-soft    { background: var(--surface-2); color: var(--text); }
+.btn-ghost   { background: transparent; color: var(--text-soft); border: 1px solid var(--border); }
+.btn.full    { width: 100%; margin-top: 8px; }
+
+.btn-endday {
+  width: 100%;
+  background: var(--accent-2-tint);
+  color: var(--text);
+  border: 1px solid var(--border);
+  margin-bottom: 10px;
+}
+.btn-test { width: 100%; margin-top: 12px; }
+
+/* ----- Estadísticas ----- */
+.stats-grid { display: flex; gap: 14px; margin-bottom: 18px; }
+.stat-box { flex: 1; text-align: center; margin-bottom: 0; }
+.stat-value { font-size: 26px; font-weight: 700; color: var(--accent-strong); display: block; }
+.stat-label { font-size: 11px; color: var(--text-soft); }
+.stat-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px; }
+
+.week-chart { display: flex; align-items: flex-end; gap: 6px; height: 72px; }
+.day-bar-wrap {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 4px; height: 100%; justify-content: flex-end;
+}
+.day-bar {
+  width: 100%;
+  min-height: 4px;
+  border-radius: 6px 6px 3px 3px;
+  background: linear-gradient(var(--accent), var(--accent-strong));
+  transition: height 0.4s ease;
+}
+.day-bar.empty { background: var(--surface-2); }
+.day-label { font-size: 9.5px; color: var(--text-soft); line-height: 1.2; text-align: center; }
+.day-num { display: block; font-size: 10.5px; font-weight: 600; color: var(--text); }
+/* Día de hoy resaltado */
+.day-bar-wrap.today .day-label { color: var(--accent-strong); font-weight: 700; }
+.day-bar-wrap.today .day-num { color: var(--accent-strong); }
+.day-bar-wrap.today .day-bar { outline: 2px solid var(--accent-strong); outline-offset: 2px; }
+
+.mini-hint { font-size: 11.5px; color: var(--text-soft); line-height: 1.45; }
+.mini-hint.center { text-align: center; margin-top: 10px; }
+
+/* ----- Píldoras de salud ----- */
+.pill-categories { display: flex; gap: 10px; margin-bottom: 16px; }
+.pill-cat {
+  position: relative;
+  flex: 1;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 11px 4px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.12s ease, border 0.2s ease, background 0.2s ease;
+}
+.pill-cat:hover { transform: translateY(-2px); }
+.pill-cat .pc-icon { font-size: 20px; display: block; }
+.pill-cat .pc-text { font-size: 10px; color: var(--text-soft); display: block; margin-top: 3px; }
+.pill-cat.selected { border-color: var(--accent); background: var(--accent-tint); }
+/* Insignia de consejos sin leer POR CATEGORÍA (esquina superior derecha) */
+.cat-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  background: #E5484D;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 22px;
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--bg);
+  pointer-events: none;
+}
+
+.pill-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ----- Interruptores (toggles) ----- */
+.toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.toggle-row strong { font-size: 14px; }
+.switch { position: relative; display: inline-block; width: 48px; height: 28px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; inset: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  transition: background 0.3s ease;
+  cursor: pointer;
+}
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 22px; width: 22px;
+  left: 2px; top: 2px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+.switch input:checked + .slider { background: var(--accent); border-color: var(--accent); }
+.switch input:checked + .slider::before { transform: translateX(20px); }
+
+/* ----- Campo secundario dentro de una tarjeta (frecuencia, volumen…) ----- */
+.card-extra {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-soft);
+}
+
+/* ----- Slider de VOLUMEN (estilo Soft Productivity) ----- */
+.volume-row { gap: 10px; }
+.vol-ico { font-size: 14px; line-height: 1; }
+.volume-value {
+  min-width: 40px;
+  text-align: right;
+  font-size: 12.5px;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.volume-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  /* El "relleno" pastel se pinta por JS con un linear-gradient inline */
+  background: var(--surface-2);
+  outline: none;
+  cursor: pointer;
+}
+/* Pulgar (Chrome/Edge/Safari) */
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--surface);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+.volume-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+.volume-slider:active::-webkit-slider-thumb { transform: scale(1.2); }
+/* Pulgar y pista (Firefox) */
+.volume-slider::-moz-range-thumb {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--surface);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+.volume-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: transparent; /* deja ver el gradiente inline del elemento */
+}
+
+/* ----- Desplegable de duraciones ----- */
+.details-card { padding: 0; }
+.details-card > summary {
+  padding: 15px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  list-style: none;
+  user-select: none;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.details-card > summary::-webkit-details-marker { display: none; }
+.details-card > summary::after { content: "⌄"; color: var(--text-soft); font-size: 16px; }
+.details-card[open] > summary::after { content: "⌃"; }
+.details-card > *:not(summary) { padding-left: 15px; padding-right: 15px; }
+.details-card > *:last-child { padding-bottom: 15px; }
+
+.dur-mode { margin: 8px 0 4px; }
+.dur-title { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.dur-fields { display: flex; flex-direction: column; gap: 6px; }
+.dur-field {
+  position: relative;          /* ancla del tooltip propio */
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12.5px; color: var(--text-soft);
+  cursor: help;                /* pista visual de que hay explicación al pasar el ratón */
+}
+/* Tooltip PROPIO (instantáneo y fiable; no depende del title nativo de Chrome).
+   Lee el texto de data-tip y aparece encima de la fila al pasar el ratón. */
+.dur-field::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: 0; right: 0;
+  bottom: calc(100% + 8px);
+  background: var(--text);
+  color: var(--surface);
+  font-size: 11px;
+  line-height: 1.35;
+  text-align: left;
+  padding: 8px 11px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+  z-index: 30;
+}
+.dur-field:hover::after,
+.dur-field:focus-within::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+.dur-input {
+  width: 72px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 13px;
+  text-align: center;
+  outline: none;
+  cursor: auto;                /* sobre el campo numérico, cursor normal */
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+.dur-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-tint); }
+/* Fases de PAUSA (las que suman al progreso): realce + etiqueta "cuenta" */
+.dur-field.counts { color: var(--text); }
+.dur-badge {
+  font-style: normal; font-size: 9.5px; font-weight: 700; letter-spacing: 0.3px;
+  text-transform: uppercase; color: var(--on-accent); background: var(--accent);
+  border-radius: 999px; padding: 2px 7px; margin-left: 6px; vertical-align: middle;
+}
+
+/* ----- Navegación inferior ----- */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  display: flex;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 16px rgba(90, 80, 65, 0.06);
+  transition: background 0.35s ease, border 0.35s ease;
+}
+.nav-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 9px 0 11px;
+  cursor: pointer;
+  color: var(--text-soft);
+  text-decoration: none;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  transition: color 0.2s ease;
+}
+.nav-btn span { font-size: 19px; transition: transform 0.2s ease; }
+.nav-btn small { font-size: 10.5px; }
+.nav-btn.active { color: var(--accent-strong); }
+.nav-btn.active span { transform: translateY(-2px); }
+/* Ítem "Invítame un café" en la barra: tono cálido para diferenciarlo */
+.nav-coffee { color: var(--coffee-fg); }
+.nav-coffee:hover { filter: brightness(1.06); }
+/* Textos de apoyo bajo el café: solo se muestran en la barra lateral de escritorio */
+.nav-support { display: none; }
+
+/* =================================================================
+   BANNER / HERO de bienvenida (vista Inicio)
+   Recreado en HTML/CSS (no imagen): nítido en retina, ligero,
+   texto real/traducible y adaptable a tema claro/oscuro.
+   ================================================================= */
+.hero-banner {
+  position: relative;
+  overflow: hidden;
+  margin: 4px 0 16px;
+  padding: 18px 18px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  /* Degradado cálido + halo mentolado (encaja con Soft Productivity) */
+  background:
+    radial-gradient(130% 150% at 100% 0%, var(--accent-tint) 0%, rgba(0,0,0,0) 55%),
+    linear-gradient(160deg, var(--surface) 0%, var(--bg-2) 100%);
+}
+.hero-content { position: relative; z-index: 1; }
+/* Foto decorativa e imagen de banner: solo en pantallas anchas (escritorio) */
+.hero-photo { display: none; }
+.hero-pic { display: contents; }
+.hero-img { display: none; }
+.hero-brand {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.2px;
+  color: var(--text); margin-bottom: 10px;
+}
+.hero-mark { font-size: 14px; }
+.hero-brand-sep { color: var(--text-soft); }
+.hero-brand-2 { color: var(--accent-strong); }
+.hero-title {
+  font-size: 23px; line-height: 1.14; font-weight: 800;
+  letter-spacing: -0.3px; color: var(--text); margin: 0 0 8px;
+}
+.hero-title .hl { color: var(--accent-strong); }
+.hero-sub {
+  font-size: 13px; line-height: 1.5; color: var(--text-soft);
+  margin: 0 0 14px; max-width: 48ch;
+}
+.hero-feats {
+  list-style: none; margin: 0 0 14px; padding: 0;
+  display: grid; grid-template-columns: 1fr; gap: 8px;
+}
+.hero-feats li {
+  display: flex; align-items: center; gap: 9px;
+  font-size: 12.5px; line-height: 1.3; color: var(--text);
+}
+.hero-ic {
+  flex: 0 0 auto;
+  width: 30px; height: 30px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 15px;
+  background: var(--surface); border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.hero-tag {
+  margin: 0; text-align: center;
+  font-size: 13.5px; font-weight: 700; color: var(--on-accent);
+  padding: 11px 14px; border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+}
+
+/* ----- Panel de ejercicios guiados (durante la pausa) ----- */
+.exercise-panel {
+  margin: 12px 0 2px;
+  text-align: left;
+  background: var(--accent-tint);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px 12px 12px;
+  animation: fade 0.3s ease;
+}
+.exercise-title {
+  font-size: 12.5px; font-weight: 700;
+  color: var(--accent-strong); margin-bottom: 8px;
+}
+.exercise-steps { margin: 0; padding-left: 20px; }
+.exercise-steps li {
+  font-size: 12.5px; color: var(--text); line-height: 1.5;
+  margin-bottom: 5px;
+}
+.exercise-steps li:last-child { margin-bottom: 0; }
+
+/* ----- Editor de "Mi rutina personalizada" ----- */
+.routine-row {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  padding: 8px; margin-bottom: 8px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+.rt-name, .rt-min {
+  font: inherit; font-size: 14px; color: var(--text);
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 6px 8px;
+}
+.rt-emoji {
+  width: 46px; height: 36px; font-size: 19px; cursor: pointer;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text);
+  transition: background 0.2s ease, border 0.2s ease;
+}
+.rt-emoji:hover { background: var(--accent-tint); border-color: var(--accent); }
+.rt-name  { flex: 1 1 110px; min-width: 90px; }
+.rt-min   { width: 58px; }
+/* Selector de tipo de fase: Trabajo / Pausa (más claro que una casilla suelta) */
+.rt-type {
+  display: inline-flex; border: 1px solid var(--border);
+  border-radius: 999px; overflow: hidden;
+}
+.rt-type-btn {
+  border: none; background: var(--surface); color: var(--text-soft);
+  font-size: 11.5px; padding: 6px 11px; cursor: pointer; white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.rt-type-btn:hover:not(.sel) { background: var(--accent-tint); }
+.rt-type-btn.sel { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+.rt-actions { margin-left: auto; display: flex; gap: 4px; }
+/* Realce de las filas que son PAUSA (para distinguirlas de un vistazo) */
+.routine-row.is-pause { border-left: 3px solid var(--accent); background: var(--accent-tint); }
+
+/* Selector de idioma */
+.lang-select { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
+.lang-btn {
+  border: none; background: var(--surface); color: var(--text-soft);
+  font-size: 12px; padding: 6px 13px; cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.lang-btn:hover:not(.sel) { background: var(--accent-tint); }
+.lang-btn.sel { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+.rt-btn {
+  width: 30px; height: 30px; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  font-size: 14px; line-height: 1; transition: background 0.2s ease;
+}
+.rt-btn:hover:not(:disabled) { background: var(--accent-tint); }
+.rt-btn:disabled { opacity: 0.35; cursor: default; }
+.rt-del { color: #c0574e; }
+/* Paleta de iconos (se despliega bajo la fila) */
+.rt-palette {
+  flex-basis: 100%;
+  display: flex; flex-wrap: wrap; gap: 5px;
+  margin-top: 8px; padding-top: 9px;
+  border-top: 1px dashed var(--border);
+}
+.rt-ic {
+  width: 34px; height: 34px; font-size: 18px; line-height: 1; cursor: pointer;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 9px; color: var(--text);
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.rt-ic:hover { background: var(--accent-tint); transform: translateY(-1px); }
+.rt-ic.sel { border-color: var(--accent); background: var(--accent-tint); }
+
+/* ----- No molestar: campos de hora ----- */
+.dnd-times { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+.dnd-field {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--text-soft);
+}
+.time-input {
+  font: inherit; font-size: 14px; color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  transition: background 0.35s ease, border 0.35s ease, color 0.35s ease;
+}
+
+/* ----- Onboarding / Bienvenida ----- */
+.onboarding-card { max-width: 380px; max-height: 88vh; overflow-y: auto; }
+.onboarding-logo {
+  width: 56px; height: 56px; border-radius: 14px;
+  display: block; margin: 0 auto 6px; box-shadow: var(--shadow-sm);
+}
+.onboarding-sub {
+  font-size: 13px; color: var(--text-soft); line-height: 1.5;
+  margin: 4px 4px 16px;
+}
+.onboarding-steps {
+  list-style: none; margin: 0 0 14px; padding: 0; text-align: left;
+}
+.onboarding-steps li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13px; line-height: 1.45; color: var(--text);
+  margin-bottom: 11px;
+}
+.onboarding-steps li:last-child { margin-bottom: 0; }
+.ob-ic { flex: 0 0 auto; font-size: 18px; line-height: 1.3; }
+.onboarding-note {
+  font-size: 11.5px; color: var(--text-soft); line-height: 1.5;
+  text-align: left; background: var(--surface-2);
+  border-radius: var(--radius-sm); padding: 9px 11px; margin: 0 0 14px;
+}
+
+/* ----- Tour interactivo (demo guiada) ----- */
+.tour { position: fixed; inset: 0; z-index: 60; }
+.tour.hidden { display: none; }
+.tour-hole {
+  position: absolute; border-radius: 14px;
+  box-shadow: 0 0 0 9999px rgba(20, 18, 15, 0.55);
+  transition: left 0.25s ease, top 0.25s ease, width 0.25s ease, height 0.25s ease;
+  pointer-events: none;
+}
+.tour-pop {
+  position: absolute; max-width: 300px; width: calc(100% - 24px);
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 15px 16px; box-shadow: var(--shadow);
+}
+.tour-pop p { font-size: 13.5px; line-height: 1.5; color: var(--text); margin: 0 0 12px; }
+.tour-controls { display: flex; align-items: center; gap: 10px; }
+.tour-count { font-size: 12px; color: var(--text-soft); margin-right: auto; }
+.tour-btn {
+  border: none; border-radius: 999px; padding: 7px 15px;
+  font-size: 12.5px; font-weight: 600; cursor: pointer;
+}
+.tour-btn.next { background: var(--accent); color: var(--on-accent); }
+.tour-btn.next:hover { filter: brightness(1.05); }
+.tour-btn.skip { background: transparent; color: var(--text-soft); }
+.tour-btn.skip:hover { background: var(--surface-2); }
+
+/* ----- Overlay Fin de Jornada ----- */
+.overlay {
+  position: fixed; inset: 0;
+  background: var(--overlay);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: grid; place-items: center;
+  z-index: 50;
+  animation: fade 0.3s ease;
+}
+.overlay-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  margin: 16px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.overlay-card h2 { font-size: 18px; margin-bottom: 16px; }
+.endday-text { font-size: 13px; color: var(--text-soft); line-height: 1.55; margin: 16px 4px; }
+.endday-timer {
+  font-size: 30px; font-weight: 700; color: var(--accent-strong);
+  margin-bottom: 16px; font-variant-numeric: tabular-nums;
+}
+
+/* Círculo de respiración animado */
+.breath-circle {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  margin: 0 auto;
+  background: radial-gradient(circle, var(--accent) 0%, var(--accent-2) 100%);
+  display: grid; place-items: center;
+  color: var(--on-accent);
+  font-weight: 600;
+  animation: breathe 8s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(0.72); opacity: 0.75; }   /* exhala */
+  50%      { transform: scale(1);    opacity: 1; }       /* inhala */
+}
+
+/* =================================================================
+   MODO WEBAPP (PWA) · diseño responsivo
+   Solo aplica con <body class="web"> (lo usa index.html). El popup de
+   la extensión NO lleva esa clase, así que su layout de 360px queda igual.
+     · Móvil  : una columna a pantalla completa (barra inferior).
+     · PC/tablet grande: barra lateral + contenido ancho que llena la pantalla.
+   Estándar y compatible con Chrome/Windows, Safari y Firefox.
+   ================================================================= */
+
+/* --- Base web (móvil): ocupa TODO el ancho del dispositivo --- */
+body.web {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;   /* alto real en móviles (Safari/Chrome) */
+}
+
+/* --- Escritorio (>= 900px): barra lateral izquierda + layout amplio --- */
+@media (min-width: 900px) {
+  html { background: var(--bg); }
+
+  /* El cuerpo ocupa toda la pantalla; deja hueco a la barra lateral fija.
+     Es flex-column para poder centrar el contenido verticalmente. */
+  body.web {
+    padding: 0 0 0 240px;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  /* La barra inferior se transforma en barra lateral vertical */
+  body.web .bottom-nav {
+    top: 0; bottom: 0; left: 0; right: auto;
+    transform: none;
+    width: 240px;
+    max-width: none;
+    height: 100vh;
+    height: 100dvh;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 6px;
+    padding: 22px 14px;
+    border-top: none;
+    border-right: 1px solid var(--border);
+    box-shadow: 4px 0 24px rgba(90, 80, 65, 0.05);
+  }
+  body.web .bottom-nav .nav-btn {
+    flex: 0 0 auto;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 13px 16px;
+    border-radius: 14px;
+  }
+  body.web .bottom-nav .nav-btn span  { font-size: 20px; }
+  body.web .bottom-nav .nav-btn small { font-size: 13.5px; }
+  body.web .bottom-nav .nav-btn.active { background: var(--accent-tint); }
+  body.web .bottom-nav .nav-btn.active span { transform: none; }
+
+  /* El café baja al fondo de la barra lateral (empuja todo lo posterior abajo)
+     y se centra para alinearlo con los textos de apoyo de abajo */
+  body.web .bottom-nav .nav-coffee { margin-top: auto; justify-content: center; }
+  /* Textos de apoyo al pie, al estilo de la sección inferior de Ajustes */
+  body.web .bottom-nav .nav-support {
+    display: block;
+    padding: 4px 8px 2px;
+  }
+  body.web .bottom-nav .nav-support .support-hint { margin-top: 6px; }
+  body.web .bottom-nav .nav-support .mini-hint { margin-top: 6px; font-size: 11px; line-height: 1.45; }
+
+  /* Cabecera + contenido anclados arriba y anchos, para llenar la pantalla */
+  body.web .app-header {
+    width: 100%; max-width: 1240px; margin: 0 auto;
+    padding: 30px 40px 10px;
+  }
+  body.web main {
+    width: 100%; max-width: 1240px; margin: 0 auto;
+    padding: 10px 40px 48px;
+  }
+
+  /* INICIO en dos columnas: (perfil + modos + fin de jornada) | temporizador */
+  body.web #view-inicio.active {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    grid-template-areas:
+      "hero    hero"
+      "profile timer"
+      "modes   timer"
+      "endday  timer";
+    column-gap: 34px;
+    row-gap: 18px;
+    align-items: start;
+    margin-top: 14px;
+  }
+  /* El banner ocupa toda la fila superior; distribución horizontal más amplia */
+  body.web #view-inicio .hero-banner {
+    grid-area: hero;
+    padding: 26px 30px 22px;
+  }
+  body.web #view-inicio .hero-title { font-size: 30px; margin-bottom: 10px; }
+  body.web #view-inicio .hero-sub   { font-size: 14px; max-width: 60ch; margin-bottom: 16px; }
+  body.web #view-inicio .hero-feats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 22px; row-gap: 10px; margin-bottom: 16px;
+  }
+  body.web #view-inicio .hero-tag { display: inline-block; padding: 11px 22px; }
+
+  /* --- TEMA CLARO: se muestra TU imagen de banner completa (fiel al diseño) --- */
+  body.web #view-inicio .hero-banner { padding: 0; border: none; background: none; }
+  body.web #view-inicio .hero-content,
+  body.web #view-inicio .hero-photo { display: none; }
+  body.web #view-inicio .hero-img {
+    display: block; width: 100%; height: auto; vertical-align: middle;
+  }
+
+  /* --- TEMA OSCURO: la imagen de fondo claro desentonaría -> texto real + hojas SVG --- */
+  [data-theme="dark"] body.web #view-inicio .hero-banner {
+    padding: 26px 30px 22px;
+    border: 1px solid var(--border);
+    background:
+      radial-gradient(130% 150% at 100% 0%, var(--accent-tint) 0%, rgba(0,0,0,0) 55%),
+      linear-gradient(160deg, var(--surface) 0%, var(--bg-2) 100%);
+  }
+  [data-theme="dark"] body.web #view-inicio .hero-img { display: none; }
+  [data-theme="dark"] body.web #view-inicio .hero-content { display: block; max-width: 56%; }
+  /* En oscuro, a la derecha (donde en claro va la chica) mostramos el LOGOTIPO
+     (persona + aros, sin fondo verde) centrado en su espacio, con halo suave. */
+  [data-theme="dark"] body.web #view-inicio .hero-photo {
+    display: block;
+    position: absolute; top: 0; right: 0; bottom: 0; width: 42%;
+    background:
+      center center / auto 58% no-repeat url("icons/logo-mark.png"),
+      center center / 70% 70% no-repeat
+        radial-gradient(circle, rgba(126, 202, 176, 0.16) 0%, rgba(126, 202, 176, 0) 60%);
+    -webkit-mask-image: none;
+            mask-image: none;
+  }
+  body.web #view-inicio .profile-card  { grid-area: profile; }
+  body.web #view-inicio .mode-selector { grid-area: modes; }
+  body.web #view-inicio .btn-endday    { grid-area: endday; }
+  body.web #view-inicio .timer-card {
+    grid-area: timer;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  /* Al tener su propia columna, el temporizador se agranda un poco */
+  body.web #view-inicio .ring       { width: 250px; height: 250px; }
+  body.web #view-inicio .ring-inner { width: 202px; height: 202px; }
+  body.web #view-inicio .phase-icon { font-size: 30px; }
+  body.web #view-inicio .time-left  { font-size: 48px; }
+  body.web #view-inicio .phase-name { max-width: 176px; font-size: 12px; }
+
+  /* Progreso aprovecha todo el ancho (dashboard). Píldoras/Ajustes: lectura cómoda. */
+  body.web #view-pildoras.active,
+  body.web #view-ajustes.active { max-width: 760px; margin-left: auto; margin-right: auto; }
+}
+
+/* =================================================================
+   Botón "Invítame un café" (monetización · pastel cálido)
+   ================================================================= */
+.btn-coffee {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 12px;
+  background: var(--coffee-bg);
+  color: var(--coffee-fg);
+  border: 1px solid var(--border);
+  text-decoration: none;
+}
+.support-hint { text-align: center; font-size: 11.5px; color: var(--text-soft); margin-top: 10px; }
+
+/* =================================================================
+   Insignia (badge) de notificaciones sin leer en la nav de Píldoras
+   ================================================================= */
+.nav-btn { position: relative; }
+.nav-badge {
+  position: absolute;
+  top: 3px;
+  left: calc(50% + 2px);
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  background: #E5484D;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 17px;
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--surface);
+  pointer-events: none;
+}
+/* En la barra lateral de escritorio, la insignia se sitúa junto al icono */
+@media (min-width: 900px) {
+  body.web .bottom-nav .nav-badge { top: 9px; left: 34px; }
+}
+
+/* Contenido exclusivo del reporte impreso (oculto en pantalla) */
+.print-only { display: none; }
+
+/* =================================================================
+   IMPRESIÓN / EXPORTAR PDF · Reporte de seguimiento (apoyo médico)
+   Documento formal en blanco: logo + app + paciente + fecha, resumen
+   de adherencia, gráfico de evolución, ejercicios y aviso legal.
+   (El usuario usa Imprimir → Guardar como PDF desde cualquier vista.)
+   ================================================================= */
+@media print {
+  html, body, body.web {
+    background: #fff !important;
+    color: #1c1c1c !important;
+    width: auto !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 26px !important;
+    display: block !important;
+  }
+  /* Oculta toda la interfaz de pantalla */
+  .app-header, main, .bottom-nav, #endday-overlay { display: none !important; }
+
+  /* Muestra SOLO el reporte */
+  .print-report { display: block !important; }
+  .print-report .print-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 2px solid #4FB79A;
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .print-logo {
+    width: 62px; height: 62px;
+    border-radius: 14px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .print-title { font-size: 21px; font-weight: 700; color: #1c1c1c; }
+  .print-subtitle { font-size: 12.5px; color: #555; }
+  .print-meta { font-size: 12px; color: #333; margin-top: 5px; }
+
+  .print-section { margin-top: 16px; break-inside: avoid; page-break-inside: avoid; }
+  .print-h {
+    font-size: 13.5px; font-weight: 700; color: #2E9A82;
+    border-bottom: 1px solid #ddd; padding-bottom: 4px; margin-bottom: 8px;
+  }
+  .pm-row {
+    display: flex; justify-content: space-between;
+    padding: 5px 2px; border-bottom: 1px dotted #ccc;
+    font-size: 12.5px; color: #333;
+  }
+  .pm-row b { color: #1c1c1c; }
+
+  .print-chart { display: flex; align-items: flex-end; gap: 5px; height: 96px; margin-top: 4px; }
+  .pc-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .pc-bar {
+    width: 100%;
+    background: #4FB79A !important;
+    border-radius: 3px 3px 0 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .pc-lab { font-size: 8px; color: #666; margin-top: 3px; }
+
+  .print-list { margin: 4px 0 0 18px; font-size: 12px; line-height: 1.65; color: #333; }
+  .print-list b { color: #1c1c1c; }
+
+  .print-notes {
+    margin: 0;
+    font-size: 12px;
+    color: #333;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    border-left: 3px solid #4FB79A;
+    padding: 4px 0 4px 12px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Líneas en blanco para que el profesional escriba a mano */
+  .print-proflines { margin-top: 10px; }
+  .print-proflines div {
+    border-bottom: 1px solid #bbb;
+    height: 30px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .print-disclaimer {
+    margin-top: 20px; padding-top: 10px;
+    border-top: 1px solid #ccc;
+    font-size: 10px; color: #777; line-height: 1.5;
+  }
+}
+
+/* ----- Utilidad ----- */
+.hidden { display: none !important; }
+
+/* ----- Accesibilidad ----- */
+/* Foco visible por teclado (no molesta al usar el ratón) */
+:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+/* Respeta a quien prefiere menos movimiento (mareos, sensibilidad vestibular) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .breath-circle { animation: none !important; }
+}
+
+/* Aviso solo-web: se muestra únicamente en la WebApp (index.html usa body.web) */
+.web-only { display: none; }
+body.web .web-only { display: block; }

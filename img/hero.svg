@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 300" fill="none">
+  <defs>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#B4E7D2"/>
+      <stop offset="1" stop-color="#54C2A2"/>
+    </linearGradient>
+    <linearGradient id="leafDark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8FD8BF"/>
+      <stop offset="1" stop-color="#46AE92"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#7ECAB0" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#7ECAB0" stop-opacity="0"/>
+    </radialGradient>
+    <g id="lf">
+      <path d="M0 0 C 20 -24 58 -24 78 0 C 58 24 20 24 0 0 Z" fill="url(#leaf)"/>
+      <path d="M9 0 H 69" stroke="#ffffff" stroke-opacity="0.55" stroke-width="2.4" stroke-linecap="round"/>
+    </g>
+    <g id="lfd">
+      <path d="M0 0 C 20 -24 58 -24 78 0 C 58 24 20 24 0 0 Z" fill="url(#leafDark)"/>
+      <path d="M9 0 H 69" stroke="#ffffff" stroke-opacity="0.45" stroke-width="2.4" stroke-linecap="round"/>
+    </g>
+  </defs>
+
+  <!-- Halo suave de fondo -->
+  <circle cx="360" cy="120" r="150" fill="url(#halo)"/>
+
+  <!-- Ramita principal (guiño al 🌿 de la marca) -->
+  <g transform="translate(250 270) rotate(-34)">
+    <path d="M0 0 C 40 -10 90 -14 150 -14" stroke="#4FB79A" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <use href="#lfd" transform="translate(150 -14) rotate(-8) scale(0.95)"/>
+    <use href="#lf"  transform="translate(112 -12) rotate(-52) scale(0.72)"/>
+    <use href="#lf"  transform="translate(112 -16) rotate(52) scale(0.72)"/>
+    <use href="#lf"  transform="translate(72 -8) rotate(-58) scale(0.62)"/>
+    <use href="#lf"  transform="translate(72 -12) rotate(58) scale(0.62)"/>
+    <use href="#lf"  transform="translate(36 -4) rotate(-64) scale(0.52)"/>
+    <use href="#lf"  transform="translate(36 -8) rotate(64) scale(0.52)"/>
+  </g>
+
+  <!-- Hojas flotando -->
+  <use href="#lf" transform="translate(300 46) rotate(-24) scale(1.15)"/>
+  <use href="#lf" transform="translate(420 118) rotate(38) scale(0.82)"/>
+  <use href="#lf" transform="translate(356 196) rotate(-64) scale(0.95)"/>
+  <use href="#lf" transform="translate(250 96) rotate(14) scale(0.66)" opacity="0.95"/>
+  <use href="#lf" transform="translate(452 54) rotate(-6) scale(0.56)" opacity="0.9"/>
+</svg>
