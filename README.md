@@ -89,3 +89,9 @@ Toda la información se guarda **solo en tu dispositivo** (`localStorage` en la 
 *Herramienta de **autocuidado y autorregistro**. No constituye un diagnóstico ni sustituye el consejo de un profesional de la salud.*
 
 <sub>Desarrollado con foco en calidad, accesibilidad y privacidad · HTML + CSS + JavaScript Vanilla.</sub>
+
+
+### ☕ ¿Te resulta útil?
+Este proyecto es gratuito y de código abierto. Si quieres apoyar su mantenimiento, puedes invitarme un café:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/bienestarvascular)
